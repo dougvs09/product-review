@@ -7,7 +7,9 @@
     "extends": [
         "plugin:react/recommended",
         "airbnb",
-        "prettier"
+        "prettier",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@next/next/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -20,16 +22,33 @@
     "plugins": [
         "react",
         "@typescript-eslint",
-        "prettier"
+        "prettier",
+        "eslint-plugin-import-helpers"
     ],
     "settings": {
       "import/resolver": {
         "node": {
-          "extensions": [".ts", ".tsx", "js", "jsx"]
+            "extensions": [".js", ".jsx", ".ts", ".tsx"],
+            "moduleDirectory": ["node_modules", "src/"]
         }
       }
     },
     "rules": {
+      "import-helpers/order-imports": [
+        "warn",
+        {
+            "newlinesBetween": "always",
+            "groups": [
+              "/^react/",
+              "/^next/",
+              "module",
+              "/^@shared/",
+              ["parent", "sibling", "index"]
+            ],
+            "alphabetize": { "order": "asc", "ignoreCase": true }
+        }
+      ],
+      "import/no-unresolved": 0,
       "prettier/prettier": "error",
       "react/react-in-jsx-scope": "off",
       "react/jsx-filename-extension": [
