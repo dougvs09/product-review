@@ -1,4 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+
+import { db } from '@services/firebase';
 import {
   addDoc,
   collection,
@@ -7,7 +9,6 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { db } from '../../../services/firebase';
 
 type ProductsData = {
   name: string;
@@ -34,11 +35,19 @@ export default async function handler(
       rating,
       brand,
       picture,
-      createdAt,
       dayOfPurchase,
     }: ProductsData = req.body;
 
-    if (!name || !price || !category) {
+    if (
+      !name ||
+      !price ||
+      !category ||
+      !rating ||
+      !brand ||
+      !picture ||
+      !dayOfPurchase ||
+      !description
+    ) {
       res.status(400).json({
         name: `Error status ${res.statusCode}`,
         message: 'Missing data',
@@ -53,7 +62,7 @@ export default async function handler(
       rating,
       brand,
       picture,
-      createdAt,
+      createdAt: new Date(),
       dayOfPurchase,
     };
 
@@ -79,16 +88,16 @@ export default async function handler(
         };
         products.push(productsWithId);
       });
+    } else {
+      const snapshot = await getDocs(collection(db, 'products'));
+      snapshot.forEach((doc) => {
+        const productsWithId = {
+          id: doc.id,
+          data: doc.data(),
+        };
+        products.push(productsWithId);
+      });
     }
-
-    const snapshot = await getDocs(collection(db, 'products'));
-    snapshot.forEach((doc) => {
-      const productsWithId = {
-        id: doc.id,
-        data: doc.data(),
-      };
-      products.push(productsWithId);
-    });
 
     res.status(200).json(products);
   } else {
