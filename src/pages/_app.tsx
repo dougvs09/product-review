@@ -1,7 +1,11 @@
 import type { AppProps } from 'next/app';
 
+import { AuthContextProvider } from '@contexts/AuthContext';
+
 const MyApp = ({ Component, pageProps }: AppProps) => (
-  <Component {...pageProps} />
+  <AuthContextProvider>
+    <Component {...pageProps} />
+  </AuthContextProvider>
 );
 
 export default MyApp;
