@@ -13,9 +13,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<DocumentData | Error>
 ) {
-  if (req.method === 'GET') {
-    const { id } = req.query;
+  const { id } = req.query;
 
+  const data = req.body;
+
+  if (req.method === 'GET') {
     let products: DocumentData = {};
 
     const snapshot = await getDoc(doc(db, 'products', `${id}`));
@@ -35,10 +37,6 @@ export default async function handler(
 
     res.status(200).json(products);
   } else if (req.method === 'PUT') {
-    const { id } = req.query;
-
-    const data = req.body;
-
     await updateDoc(doc(db, 'products', `${id}`), data);
 
     let products: DocumentData = {};
@@ -54,14 +52,12 @@ export default async function handler(
 
     res.status(200).json(products);
   } else if (req.method === 'DELETE') {
-    const { id } = req.query;
-
     await deleteDoc(doc(db, 'products', `${id}`));
 
     const snapshot = await getDoc(doc(db, 'products', `${id}`));
 
     if (!snapshot.exists()) {
-      res.status(200).json({ message: 'Deletado com sucesso!' });
+      res.status(200).json({ message: 'Successfully deleted' });
     }
   } else {
     res.status(405).json({
