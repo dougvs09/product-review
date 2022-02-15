@@ -24,8 +24,10 @@ export default async function handler(
 
     if (!snapshot.exists()) {
       res.status(404).json({
-        name: `Error status ${res.statusCode}`,
-        message: 'Product not found',
+        error: {
+          name: `Error status ${res.statusCode}`,
+          message: 'Product not found',
+        },
       });
       return;
     }
@@ -61,8 +63,10 @@ export default async function handler(
     }
   } else {
     res.status(405).json({
-      name: `Error status ${res.statusCode}`,
-      message: 'Method Not Allowed',
+      error: {
+        name: `Error status ${res.statusCode}`,
+        message: 'Method Not Allowed',
+      },
     });
   }
 }

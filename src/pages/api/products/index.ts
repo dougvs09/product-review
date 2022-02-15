@@ -49,8 +49,10 @@ export default async function handler(
       !description
     ) {
       res.status(400).json({
-        name: `Error status ${res.statusCode}`,
-        message: 'Missing data',
+        error: {
+          name: `Error status ${res.statusCode}`,
+          message: 'Missing data',
+        },
       });
     }
 
@@ -74,7 +76,7 @@ export default async function handler(
   } else if (req.method === 'GET') {
     const products: DocumentData = [];
 
-    if (category) {
+    if (filter) {
       const snapshot = await getDocs(
         query(collection(db, 'products'), where('category', '==', `${filter}`))
       );
@@ -99,8 +101,10 @@ export default async function handler(
     res.status(200).json(products);
   } else {
     res.status(405).json({
-      name: `Error status ${res.statusCode}`,
-      message: 'Method Not Allowed',
+      error: {
+        name: `Error status ${res.statusCode}`,
+        message: 'Method Not Allowed',
+      },
     });
   }
 }
