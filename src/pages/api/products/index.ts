@@ -17,8 +17,8 @@ type ProductsData = {
   description: string;
   rating: number;
   brand: string;
-  picture: string;
-  createdAt: string;
+  file: Blob;
+  createdAt: Date;
   dayOfPurchase: string;
 };
 
@@ -26,25 +26,25 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ProductsData | Error | DocumentData>
 ) {
-  if (req.method === 'POST') {
-    const {
-      name,
-      description,
-      price,
-      category,
-      rating,
-      brand,
-      picture,
-      dayOfPurchase,
-    }: ProductsData = req.body;
+  const {
+    name,
+    description,
+    price,
+    category,
+    rating,
+    brand,
+    file,
+    dayOfPurchase,
+  }: ProductsData = req.body;
 
+  const { filter } = req.query;
+  if (req.method === 'POST') {
     if (
       !name ||
       !price ||
       !category ||
       !rating ||
       !brand ||
-      !picture ||
       !dayOfPurchase ||
       !description
     ) {
@@ -54,6 +54,8 @@ export default async function handler(
       });
     }
 
+    const picture = file;
+
     const data = {
       name,
       price,
@@ -61,7 +63,7 @@ export default async function handler(
       description,
       rating,
       brand,
-      picture,
+      picture: picture || null,
       createdAt: new Date(),
       dayOfPurchase,
     };
@@ -70,16 +72,11 @@ export default async function handler(
 
     res.status(200).json(data);
   } else if (req.method === 'GET') {
-    const { category } = req.query;
-
     const products: DocumentData = [];
 
     if (category) {
       const snapshot = await getDocs(
-        query(
-          collection(db, 'products'),
-          where('category', '==', `${category}`)
-        )
+        query(collection(db, 'products'), where('category', '==', `${filter}`))
       );
       snapshot.forEach((doc) => {
         const productsWithId = {
