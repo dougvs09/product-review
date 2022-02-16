@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
-import { auth } from '@services/firebase';
+import { auth, db } from '@services/firebase';
 import {
   GithubAuthProvider,
   GoogleAuthProvider,
@@ -11,6 +11,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 
 type AuthContextProviderTypes = {
@@ -34,7 +35,9 @@ type AuthContextType = {
   SignOut: () => Promise<void>;
 };
 
-export const AuthContext = createContext({} as AuthContextType);
+export const AuthContext = createContext<AuthContextType>(
+  {} as AuthContextType
+);
 
 export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
   const [user, setUser] = useState<User | null>();
@@ -74,11 +77,14 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
         };
 
         if (auth.currentUser) {
-          const credential = EmailAuthProvider.credential(
-            userData.email || '',
-            uuidv4()
-          );
-          await linkWithCredential(auth.currentUser, credential);
+          if (auth.currentUser.providerData.length === 1) {
+            const credential = EmailAuthProvider.credential(
+              auth.currentUser.email || '',
+              uuidv4()
+            );
+            await linkWithCredential(auth.currentUser, credential);
+            await setDoc(doc(db, 'users', auth.currentUser.uid), userData);
+          }
         }
 
         setUser(userData);
@@ -96,11 +102,14 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
         };
 
         if (auth.currentUser) {
-          const credential = EmailAuthProvider.credential(
-            userData.email || '',
-            uuidv4()
-          );
-          await linkWithCredential(auth.currentUser, credential);
+          if (auth.currentUser.providerData.length === 1) {
+            const credential = EmailAuthProvider.credential(
+              auth.currentUser.email || '',
+              uuidv4()
+            );
+            await linkWithCredential(auth.currentUser, credential);
+            await setDoc(doc(db, 'users', auth.currentUser.uid), userData);
+          }
         }
 
         setUser(userData);
