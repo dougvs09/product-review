@@ -85,6 +85,7 @@
           "ts": "never",
           "tsx": "never"
         }
-      ]
+      ],
+      "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.tsx", "**/*.spec.tsx", "**/setup.ts"]}]
     }
 }
