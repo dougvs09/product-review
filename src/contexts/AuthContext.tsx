@@ -18,17 +18,17 @@ type AuthContextProviderTypes = {
   children: ReactNode;
 };
 
-type User = {
+export type User = {
   id: string;
   name: string;
   email: string;
   avatarUrl: string;
 };
 
-type AuthContextType = {
+export type AuthContextType = {
   user: User | null | undefined;
   SignIn: (
-    providerName: 'google' | 'github' | 'password',
+    providerName: string,
     email?: string,
     password?: string
   ) => Promise<void>;
@@ -60,7 +60,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
   }, []);
 
   const SignIn = async (
-    providerName: 'google' | 'github' | 'password',
+    providerName: string,
     email?: string,
     password?: string
   ) => {
