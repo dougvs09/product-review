@@ -52,6 +52,7 @@
       "import/no-unresolved": 0,
       "prettier/prettier": "error",
       "react/react-in-jsx-scope": "off",
+      "jsx-a11y/label-has-associated-control": "off",
       "react/jsx-filename-extension": [
         1,
         {
@@ -86,6 +87,7 @@
           "tsx": "never"
         }
       ],
-      "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.tsx", "**/*.spec.tsx", "**/setup.ts"]}]
+      "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.tsx", "**/*.spec.tsx", "**/setup.ts"]}],
+      "react/jsx-no-constructed-context-values": "off"
     }
 }
