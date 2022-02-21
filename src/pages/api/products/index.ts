@@ -9,6 +9,7 @@ import {
   query,
   where,
 } from 'firebase/firestore';
+import { getFileUploaded } from 'utils/getFileUploaded';
 
 type ProductsData = {
   name: string;
@@ -17,7 +18,11 @@ type ProductsData = {
   description: string;
   rating: number;
   brand: string;
-  file: Blob;
+  file: {
+    fileBlob: Blob;
+    filePath: string;
+    contentType: string;
+  };
   createdAt: Date;
   dayOfPurchase: string;
 };
@@ -33,7 +38,7 @@ export default async function handler(
     category,
     rating,
     brand,
-    file,
+    file: { fileBlob, filePath, contentType },
     dayOfPurchase,
   }: ProductsData = req.body;
 
@@ -56,7 +61,7 @@ export default async function handler(
       });
     }
 
-    const picture = file;
+    const picture = await getFileUploaded(fileBlob, filePath, contentType);
 
     const data = {
       name,
