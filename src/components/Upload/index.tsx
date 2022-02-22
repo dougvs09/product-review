@@ -4,10 +4,11 @@ import {
   DropzoneRootProps,
   FileRejection,
 } from 'react-dropzone';
+import { BsArrowDownShort } from 'react-icons/bs';
 
 import Image from 'next/image';
 
-import { Drop, DropMessage } from './styles';
+import { Container, Drop, DropMessage } from './styles';
 
 type FileDataTypes = {
   id: string;
@@ -37,7 +38,7 @@ export const Upload: React.FC<UploadTypes> = ({
   }, [fileData]);
 
   return (
-    <section>
+    <Container>
       <Drop
         {...getRootProps()}
         isDragReject={isDragReject}
@@ -52,6 +53,9 @@ export const Upload: React.FC<UploadTypes> = ({
             'Clique aqui e arraste a imagem desejada'}
         </DropMessage>
       </Drop>
+      <span>
+        Preview <BsArrowDownShort />
+      </span>
       {fileRejections.length < 1 && (
         <div>
           {fileData?.map((file) => (
@@ -67,6 +71,6 @@ export const Upload: React.FC<UploadTypes> = ({
           ))}
         </div>
       )}
-    </section>
+    </Container>
   );
 };

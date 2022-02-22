@@ -1,5 +1,24 @@
 import { styled } from '../../../stitches.config';
 
+export const Container = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  gap: '20px',
+  padding: '0 20px',
+
+  '> span': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '5px',
+
+    fontFamily: '$sansSerif',
+    fontWeight: '$semiBold',
+    fontSize: '$2',
+    color: '$purple200',
+  },
+});
+
 export const Drop = styled('div', {
   display: 'grid',
   alignItems: 'center',
