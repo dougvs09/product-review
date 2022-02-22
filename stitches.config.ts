@@ -4,6 +4,7 @@ export const {
   config,
   createTheme,
   css,
+  keyframes,
   getCssText,
   globalCss,
   styled,
