@@ -22,7 +22,7 @@ export const globalStyles = globalCss({
   },
 
   button: {
-    margin: 0,
+    margin: 'none',
     outline: 'none',
     cursor: 'pointer',
   },
