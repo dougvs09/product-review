@@ -18,11 +18,7 @@ type ProductsData = {
   description: string;
   rating: number;
   brand: string;
-  file: {
-    fileBlob: Blob;
-    filePath: string;
-    contentType: string;
-  };
+  file: string;
   createdAt: Date;
   dayOfPurchase: string;
 };
@@ -38,7 +34,7 @@ export default async function handler(
     category,
     rating,
     brand,
-    file: { fileBlob, filePath, contentType },
+    file,
     dayOfPurchase,
   }: ProductsData = req.body;
 
@@ -61,8 +57,6 @@ export default async function handler(
       });
     }
 
-    const picture = await getFileUploaded(fileBlob, filePath, contentType);
-
     const data = {
       name,
       price,
@@ -70,7 +64,7 @@ export default async function handler(
       description,
       rating,
       brand,
-      picture: picture || null,
+      file,
       createdAt: new Date(),
       dayOfPurchase,
     };
