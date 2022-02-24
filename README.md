@@ -11,6 +11,7 @@
   <li>React-hook-form</li>
   <li>React-query</li>
   <li>Firebase</li>
+  <li>Jest</li>
 </ul>
 
 <h2>Informações sobre o desenvolvimento ✔️</h2>
