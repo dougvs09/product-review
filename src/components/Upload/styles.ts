@@ -63,3 +63,12 @@ export const DropMessage = styled('span', {
     },
   },
 });
+
+export const PicturePreview = styled('div', {
+  maxWidth: '400px',
+  height: '400px',
+
+  span: {
+    borderRadius: '8px',
+  },
+});

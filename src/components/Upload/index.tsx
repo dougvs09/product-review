@@ -8,7 +8,7 @@ import { BsArrowDownShort } from 'react-icons/bs';
 
 import Image from 'next/image';
 
-import { Container, Drop, DropMessage } from './styles';
+import { Container, Drop, DropMessage, PicturePreview } from './styles';
 
 type FileDataTypes = {
   id: string;
@@ -57,19 +57,19 @@ export const Upload: React.FC<UploadTypes> = ({
         Preview <BsArrowDownShort />
       </span>
       {fileRejections.length < 1 && (
-        <div>
+        <PicturePreview>
           {fileData?.map((file) => (
             <span key={file.id}>
               <Image
                 src={file.preview}
                 alt="image preview"
-                width={100}
-                height={100}
+                width={400}
+                height={400}
                 objectFit="cover"
               />
             </span>
           ))}
-        </div>
+        </PicturePreview>
       )}
     </Container>
   );
