@@ -9,7 +9,6 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { getFileUploaded } from 'utils/getFileUploaded';
 
 type ProductsData = {
   name: string;
