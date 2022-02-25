@@ -113,7 +113,7 @@ const Create: NextPage = () => {
             description: data.description,
             rating: data.rate,
             brand: data.brand,
-            file: picture,
+            picture,
             dayOfPurchase: data.dayOfPurchase,
           });
 
