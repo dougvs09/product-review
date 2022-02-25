@@ -18,7 +18,7 @@ type ProductsData = {
   description: string;
   rating: number;
   brand: string;
-  file: string;
+  picture: string;
   createdAt: Date;
   dayOfPurchase: string;
 };
@@ -34,7 +34,7 @@ export default async function handler(
     category,
     rating,
     brand,
-    file,
+    picture,
     dayOfPurchase,
   }: ProductsData = req.body;
 
@@ -64,7 +64,7 @@ export default async function handler(
       description,
       rating,
       brand,
-      file,
+      picture,
       createdAt: new Date(),
       dayOfPurchase,
     };
