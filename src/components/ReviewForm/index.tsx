@@ -83,7 +83,6 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
           Price
         </Label>
         <input
-          type="number"
           placeholder="R$ 1.999,99"
           {...register('price', {
             required: true,
