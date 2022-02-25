@@ -12,6 +12,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { api } from 'utils/api';
 import { v4 as uuidv4 } from 'uuid';
 
 type AuthContextProviderTypes = {
@@ -23,6 +24,7 @@ export type User = {
   name: string;
   email: string;
   avatarUrl: string;
+  token: string;
 };
 
 export type AuthContextType = {
@@ -43,14 +45,19 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
   const [user, setUser] = useState<User | null>();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (data) => {
+    const unsubscribe = onAuthStateChanged(auth, async (data) => {
       if (data) {
+        const token = await data.getIdToken();
+
         const userData = {
           id: data.uid,
           name: data.displayName || 'Nome não forncecido',
           email: data.email || 'Email não fornecido',
           avatarUrl: data.photoURL || 'Foto não fornceda',
+          token,
         };
+
+        api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
         setUser(userData);
       }
@@ -69,11 +76,14 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
       const signIn = await signInWithPopup(auth, provider);
 
       if (signIn.user) {
+        const token = await signIn.user.getIdToken();
+
         const userData = {
           id: signIn.user.uid,
           name: signIn.user.displayName || 'Nome não forncecido',
           email: signIn.user.email || 'Email não fornecido',
           avatarUrl: signIn.user.photoURL || 'Foto não fornceda',
+          token,
         };
 
         if (auth.currentUser) {
@@ -86,6 +96,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
             await setDoc(doc(db, 'users', auth.currentUser.uid), userData);
           }
         }
+
+        api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
         setUser(userData);
       }
@@ -94,11 +106,14 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
       const signIn = await signInWithPopup(auth, provider);
 
       if (signIn.user) {
+        const token = await signIn.user.getIdToken();
+
         const userData = {
           id: signIn.user.uid,
           name: signIn.user.displayName || 'Nome não forncecido',
           email: signIn.user.email || 'Email não fornecido',
           avatarUrl: signIn.user.photoURL || 'Foto não fornceda',
+          token,
         };
 
         if (auth.currentUser) {
@@ -112,18 +127,25 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
           }
         }
 
+        api.defaults.headers.common.Authorization = `Bearer ${token}`;
+
         setUser(userData);
       }
     } else if (providerName === 'password' && email && password) {
       const signIn = await signInWithEmailAndPassword(auth, email, password);
 
       if (signIn.user) {
+        const token = await signIn.user.getIdToken();
+
         const userData = {
           id: signIn.user.uid,
           name: signIn.user.displayName || 'Nome não forncecido',
           email: signIn.user.email || 'Email não fornecido',
           avatarUrl: signIn.user.photoURL || 'Foto não fornceda',
+          token,
         };
+
+        api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
         setUser(userData);
       }
