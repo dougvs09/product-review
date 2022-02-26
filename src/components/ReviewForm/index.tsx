@@ -1,8 +1,9 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { MdClear } from 'react-icons/md';
 
+import { Button } from '@components/Button';
+
 import {
-  Button,
   Clear,
   Errors,
   Form,
