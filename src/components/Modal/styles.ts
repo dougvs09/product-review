@@ -36,12 +36,25 @@ export const Container = styled('div', {
 export const ModalContainer = styled('div', {
   position: 'relative',
   width: '550px',
-  height: '350px',
   borderRadius: '8px',
 
   background: '$purple100',
 
   animation: `${showModal} 0.5s forwards`,
+
+  variants: {
+    size: {
+      sm: {
+        height: '200px',
+      },
+      md: {
+        height: '350px',
+      },
+      lg: {
+        height: '500px',
+      },
+    },
+  },
 });
 
 export const CloseButton = styled('button', {
