@@ -8,6 +8,7 @@ import { NextPage } from 'next';
 import { Modal } from '@components/Modal';
 import { ReviewForm, FormTypes } from '@components/ReviewForm';
 import { Upload } from '@components/Upload';
+import { useAuth } from '@hooks/useAuth';
 import { api } from 'utils/api';
 import { getFileUploaded } from 'utils/getFileUploaded';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,7 +21,7 @@ type FileDataTypes = {
   preview: string;
 };
 
-const Container = styled('div', {
+const Container = styled('section', {
   display: 'grid',
 
   h1: {
@@ -69,6 +70,7 @@ const SendMessage = styled('span', {
 });
 
 const Create: NextPage = () => {
+  const { user } = useAuth();
   const [fileData, setFileData] = useState<FileDataTypes[]>();
   const [loading, setLoading] = useState(false);
   const [modalOpened, setModalOpened] = useState(false);
@@ -95,37 +97,31 @@ const Create: NextPage = () => {
   const handleCreateReview: SubmitHandler<FormTypes> = async (data) => {
     setLoading(true);
     if (fileData) {
-      fileData[0].file.arrayBuffer().then(async (arrayBuffer) => {
-        const blob = new Blob([new Uint8Array(arrayBuffer)], {
-          type: fileData[0].file.type,
+      try {
+        const picture = await getFileUploaded(
+          fileData[0].file,
+          `images/${user?.id}/${fileData[0].file.name}`,
+          fileData[0].file.type
+        );
+        const response = await api.post('products', {
+          name: data.title,
+          price: data.price,
+          category: data.category,
+          description: data.description,
+          rating: data.rate,
+          brand: data.brand,
+          picture,
+          dayOfPurchase: data.dayOfPurchase,
         });
 
-        try {
-          const picture = await getFileUploaded(
-            blob,
-            `images/${fileData[0].file.name}`,
-            fileData[0].file.type
-          );
-          const response = await api.post('products', {
-            name: data.title,
-            price: data.price,
-            category: data.category,
-            description: data.description,
-            rating: data.rate,
-            brand: data.brand,
-            picture,
-            dayOfPurchase: data.dayOfPurchase,
-          });
-
-          if (response.status === 200) {
-            setLoading(false);
-            setModalOpened(true);
-          }
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.log(e);
+        if (response.status === 200) {
+          setLoading(false);
+          setModalOpened(true);
         }
-      });
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e);
+      }
     }
   };
 
