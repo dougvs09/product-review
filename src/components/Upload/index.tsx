@@ -22,7 +22,7 @@ type UploadTypes = {
   isDragAccept: boolean;
   isDragReject: boolean;
   fileRejections: FileRejection[];
-  fileData: FileDataTypes[] | undefined;
+  files: FileDataTypes[] | undefined;
 };
 
 export const Upload: React.FC<UploadTypes> = ({
@@ -30,12 +30,12 @@ export const Upload: React.FC<UploadTypes> = ({
   getInputProps,
   isDragReject,
   isDragAccept,
-  fileData,
+  files,
   fileRejections,
 }: UploadTypes) => {
   useEffect(() => {
-    fileData?.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, [fileData]);
+    files?.forEach((file) => URL.revokeObjectURL(file.preview));
+  }, [files]);
 
   return (
     <Container>
@@ -58,7 +58,7 @@ export const Upload: React.FC<UploadTypes> = ({
       </span>
       {fileRejections.length < 1 && (
         <PicturePreview>
-          {fileData?.map((file) => (
+          {files?.map((file) => (
             <span key={file.id}>
               <Image
                 src={file.preview}
