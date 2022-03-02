@@ -11,7 +11,6 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
 import { api } from 'utils/api';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -93,7 +92,12 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
               uuidv4()
             );
             await linkWithCredential(auth.currentUser, credential);
-            await setDoc(doc(db, 'users', auth.currentUser.uid), userData);
+            api.post('user', {
+              id: signIn.user.uid,
+              name: signIn.user.displayName,
+              email: signIn.user.email,
+              avatarUrl: signIn.user.photoURL,
+            });
           }
         }
 
@@ -123,7 +127,12 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
               uuidv4()
             );
             await linkWithCredential(auth.currentUser, credential);
-            await setDoc(doc(db, 'users', auth.currentUser.uid), userData);
+            api.post('user', {
+              id: signIn.user.uid,
+              name: signIn.user.displayName,
+              email: signIn.user.email,
+              avatarUrl: signIn.user.photoURL,
+            });
           }
         }
 
