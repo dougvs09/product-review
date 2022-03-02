@@ -22,7 +22,7 @@ export const InputGroup = styled('div', {
 
   input: {
     maxWidth: '400px',
-    padding: '10px 7px',
+    padding: '10px 35px 7px 10px',
     borderRadius: '8px',
     border: '2px solid $purple100',
     outline: 'none',
@@ -39,6 +39,10 @@ export const InputGroup = styled('div', {
 
     '&::placeholder': {
       color: '$gray100',
+    },
+
+    '&.date': {
+      padding: '10px 7px',
     },
   },
 });
@@ -88,7 +92,7 @@ export const TextareaGroup = styled('div', {
     maxWidth: '400px',
     height: '200px',
     resize: 'none',
-    padding: '10px 23px 10px 5px',
+    padding: '10px 35px 10px 7px',
     borderRadius: '8px',
     border: '2px solid $purple100',
     outline: 'none',

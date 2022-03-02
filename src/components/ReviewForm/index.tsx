@@ -107,12 +107,12 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
           placeholder="Coloque uma nota de 1,0 a 5,0"
           {...register('rate', {
             required: true,
-            pattern: /([0-9]{1}[,])([0-9]{2})/,
+            pattern: /([0-5]{1}[,])([0-9]{1})/,
           })}
         />
-        {errors.price?.type === 'required' && <Errors>Is required</Errors>}
-        {errors.price?.type === 'pattern' && (
-          <Errors>Formato aceito: 0,00</Errors>
+        {errors.rate?.type === 'required' && <Errors>Is required</Errors>}
+        {errors.rate?.type === 'pattern' && (
+          <Errors>Formato aceito: 0,0 até 5,0</Errors>
         )}
         <Clear type="button" onClick={() => clearInput('rate')}>
           <MdClear color="#FFF" />
@@ -189,6 +189,7 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
           Day of purchase
         </Label>
         <input
+          className="date"
           type="date"
           {...register('dayOfPurchase', {
             required: true,
