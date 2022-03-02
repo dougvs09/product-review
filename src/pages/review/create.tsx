@@ -9,8 +9,8 @@ import { Modal } from '@components/Modal';
 import { ReviewForm, FormTypes } from '@components/ReviewForm';
 import { Upload } from '@components/Upload';
 import { useAuth } from '@hooks/useAuth';
+import { AxiosResponse } from 'axios';
 import { api } from 'utils/api';
-import { getFileUploaded } from 'utils/getFileUploaded';
 import { v4 as uuidv4 } from 'uuid';
 
 import { styled } from '../../../stitches.config';
@@ -20,6 +20,10 @@ type FileDataTypes = {
   file: File;
   preview: string;
 };
+
+interface ReviewResponse extends FormTypes {
+  id: string;
+}
 
 const Container = styled('section', {
   display: 'grid',
@@ -71,7 +75,7 @@ const SendMessage = styled('span', {
 
 const Create: NextPage = () => {
   const { user } = useAuth();
-  const [fileData, setFileData] = useState<FileDataTypes[]>();
+  const [files, setFiles] = useState<FileDataTypes[]>();
   const [loading, setLoading] = useState(false);
   const [modalOpened, setModalOpened] = useState(false);
 
@@ -83,7 +87,7 @@ const Create: NextPage = () => {
     fileRejections,
   } = useDropzone({
     onDrop: (acceptedFiles) =>
-      setFileData(
+      setFiles(
         acceptedFiles.map((file) => ({
           file,
           id: uuidv4(),
@@ -96,25 +100,30 @@ const Create: NextPage = () => {
 
   const handleCreateReview: SubmitHandler<FormTypes> = async (data) => {
     setLoading(true);
-    if (fileData) {
+    if (files) {
       try {
-        const picture = await getFileUploaded(
-          fileData[0].file,
-          `images/${user?.id}/${fileData[0].file.name}`,
-          fileData[0].file.type
-        );
-        const response = await api.post('products', {
-          name: data.title,
-          price: data.price,
-          category: data.category,
-          description: data.description,
-          rating: data.rate,
-          brand: data.brand,
-          picture,
-          dayOfPurchase: data.dayOfPurchase,
+        const form = new FormData();
+        form.append('picture', files[0].file);
+
+        const reviewCreated: AxiosResponse<ReviewResponse, null> =
+          await api.post('review', {
+            name: data.title,
+            categoryId: 'd76967e2-c556-4a32-89c5-8c9404d89622',
+            description: data.description,
+            authorId: user?.id,
+            rate: data.rate,
+            price: data.price,
+            dayOfPurchase: data.dayOfPurchase,
+          });
+
+        const pictureUploaded = await api.put('review/picture/upload', form, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            id: reviewCreated.data.id,
+          },
         });
 
-        if (response.status === 200) {
+        if (reviewCreated.status === 201 && pictureUploaded.status === 200) {
           setLoading(false);
           setModalOpened(true);
         }
@@ -138,7 +147,7 @@ const Create: NextPage = () => {
           isDragReject={isDragReject}
           getInputProps={getInputProps}
           getRootProps={getRootProps}
-          fileData={fileData}
+          files={files}
           fileRejections={fileRejections}
         />
         <ReviewForm handleCreateReview={handleCreateReview} loading={loading} />
