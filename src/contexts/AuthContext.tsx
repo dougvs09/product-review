@@ -57,6 +57,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
         };
 
         api.defaults.headers.common.Authorization = `Bearer ${token}`;
+        document.cookie = `token=${token}`;
 
         setUser(userData);
       }
@@ -102,6 +103,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
         }
 
         api.defaults.headers.common.Authorization = `Bearer ${token}`;
+        document.cookie = `[token]=[${token}]`;
 
         setUser(userData);
       }
@@ -137,6 +139,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
         }
 
         api.defaults.headers.common.Authorization = `Bearer ${token}`;
+        document.cookie = `token=${token}`;
 
         setUser(userData);
       }
@@ -155,6 +158,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
         };
 
         api.defaults.headers.common.Authorization = `Bearer ${token}`;
+        document.cookie = `token=${token}`;
 
         setUser(userData);
       }
@@ -163,6 +167,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderTypes) => {
 
   const SignOut = async () => {
     await signOut(auth);
+    document.cookie = 'token=';
     window.location.reload();
   };
 
