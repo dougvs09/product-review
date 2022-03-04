@@ -1,55 +1,65 @@
-import React, { FormEvent, useState } from 'react';
-import { BsGithub, BsGoogle, BsEye, BsEyeSlash } from 'react-icons/bs';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { BsGithub, BsGoogle } from 'react-icons/bs';
 
-import { Button } from '@components/Button';
 import { Modal } from '@components/Modal';
 import { useAuth } from '@hooks/useAuth';
 
 import {
   Container,
   Form,
-  Input,
+  InputGroup,
   ModalContainer,
   ProviderButton,
-  ViewPassword,
+  Errors,
+  ButtonSignAndSignup,
+  EnterButton,
 } from './styles';
+
+type FormTypes = {
+  email: string;
+  password: string;
+};
 
 export const SigninAndSignup: React.FC = () => {
   const { SignIn } = useAuth();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormTypes>();
+
   const [signinOrSignup, setSigninOrSignup] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [typePassword, setTypePassword] = useState('password');
 
-  const handlePasswordSignup = (e: FormEvent) => {
-    e.preventDefault();
+  const handleSigninOrSignup = (method: string) => {
+    setSigninOrSignup(method);
+  };
 
-    if (!password || !email) {
-      return;
-    }
-    SignIn('password', email, password);
+  const handlePasswordSignup: SubmitHandler<FormTypes> = (data) => {
+    SignIn('password', data.email, data.password);
   };
 
   return (
     <Container>
-      <Button
+      <ButtonSignAndSignup
         type="button"
         size="xsm"
         color="purple"
-        onClick={() => setSigninOrSignup('signup')}
+        onClick={() => handleSigninOrSignup('signup')}
       >
         SignUp
-      </Button>
-      <Button
+      </ButtonSignAndSignup>
+      <ButtonSignAndSignup
         type="button"
         size="xsm"
         color="white"
-        onClick={() => setSigninOrSignup('signin')}
+        onClick={() => handleSigninOrSignup('signin')}
       >
         SignIn
-      </Button>
+      </ButtonSignAndSignup>
       {signinOrSignup === 'signin' && (
-        <Modal size="md" onClick={() => setSigninOrSignup('')}>
+        <Modal onClick={() => handleSigninOrSignup('')}>
           <ModalContainer>
             <h1>Entre em sua conta</h1>
             <ProviderButton
@@ -69,38 +79,36 @@ export const SigninAndSignup: React.FC = () => {
               <BsGithub /> Entre com o Github
             </ProviderButton>
             <span>Ou entre com seu email e senha</span>
-            <Form onSubmit={handlePasswordSignup}>
-              <Input
-                type="text"
-                required
-                placeholder="Email"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Input
-                type={typePassword}
-                required
-                placeholder="Senha"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <ViewPassword
-                type="button"
-                onClick={() =>
-                  typePassword === 'password'
-                    ? setTypePassword('text')
-                    : setTypePassword('password')
-                }
-              >
-                {typePassword === 'password' ? <BsEye /> : <BsEyeSlash />}
-              </ViewPassword>
-              <Button type="submit" size="sm" color="white">
+            <Form onSubmit={handleSubmit(handlePasswordSignup)}>
+              <InputGroup>
+                <input
+                  type="text"
+                  placeholder="Email"
+                  {...register('email', { required: true })}
+                />
+                {errors.email?.type === 'required' && (
+                  <Errors>Is required</Errors>
+                )}
+              </InputGroup>
+              <InputGroup>
+                <input
+                  type="password"
+                  placeholder="Senha"
+                  {...register('password', { required: true })}
+                />
+                {errors.password?.type === 'required' && (
+                  <Errors>Is required</Errors>
+                )}
+              </InputGroup>
+              <EnterButton type="submit" size="sm" color="white">
                 Entrar
-              </Button>
+              </EnterButton>
             </Form>
           </ModalContainer>
         </Modal>
       )}
       {signinOrSignup === 'signup' && (
-        <Modal size="sm" onClick={() => setSigninOrSignup('')}>
+        <Modal onClick={() => handleSigninOrSignup('')}>
           <ModalContainer>
             <h1>Crie sua conta</h1>
             <ProviderButton type="button" size="lg" color="salmon">

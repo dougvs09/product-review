@@ -23,6 +23,8 @@ const showModal = keyframes({
 export const Container = styled('div', {
   position: 'fixed',
   top: '0',
+  left: '0',
+  zIndex: '1000',
   width: '100%',
   height: '100%',
   display: 'grid',
@@ -35,6 +37,7 @@ export const Container = styled('div', {
 
 export const ModalContainer = styled('div', {
   position: 'relative',
+  zIndex: '1000',
   width: '550px',
   borderRadius: '8px',
 
@@ -51,6 +54,9 @@ export const ModalContainer = styled('div', {
         height: '350px',
       },
       lg: {
+        height: '400px',
+      },
+      xlg: {
         height: '500px',
       },
     },

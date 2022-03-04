@@ -16,9 +16,10 @@ export const ModalContainer = styled('div', {
   flexDirection: 'column',
   alignItems: 'center',
   gap: '10px',
+  padding: '20px 0',
 
   h1: {
-    padding: '25px 0 10px 0',
+    paddingBottom: '10px',
 
     fontSize: '$3',
     fontWeight: 'semiBold',
@@ -32,14 +33,7 @@ export const ModalContainer = styled('div', {
   },
 });
 
-export const ProviderButton = styled(Button, {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '10px',
-});
-
 export const Form = styled('form', {
-  position: 'relative',
   width: '300px',
   display: 'flex',
   flexDirection: 'column',
@@ -47,28 +41,64 @@ export const Form = styled('form', {
   gap: '10px',
 });
 
-export const Input = styled('input', {
-  width: '100%',
-  padding: '10px 8px',
-  border: '0',
-  outline: 'none',
-  borderRadius: '8px',
+export const InputGroup = styled('div', {
+  width: '300px',
 
-  fontFamily: '$sansSerif',
-  fontSize: '$2',
-  fontWeight: 'semiBold',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '5px',
+
+  position: 'relative',
+
+  input: {
+    maxWidth: '300px',
+    padding: '10px 7px',
+    borderRadius: '8px',
+    border: '2px solid $purple100',
+    outline: 'none',
+
+    transition: '0.2s',
+
+    fontFamily: '$sansSerif',
+    fontWeight: '$medium',
+    fontSize: '$2',
+
+    '&:focus': {
+      borderColor: '$purple200',
+    },
+
+    '&::placeholder': {
+      color: '$gray100',
+      fontSize: '$2',
+      fontWeight: '$medium',
+    },
+  },
 });
 
-export const ViewPassword = styled('button', {
-  position: 'absolute',
-  background: 'transparent',
-  outline: 'none',
-  border: '0',
-  top: '59px',
-  right: '15px',
+export const Errors = styled('span', {
+  fontWeight: '$semiBold',
+  fontSize: '$1',
+  color: '$red100',
+});
 
-  '& svg': {
-    height: '20px',
-    width: '20px',
-  },
+export const ButtonSignAndSignup = styled(Button, {
+  fontFamily: '$sansSerif',
+  fontWeight: '$semiBold',
+  fontSize: '$1',
+});
+
+export const EnterButton = styled(Button, {
+  fontFamily: '$sansSerif',
+  fontWeight: '$medium',
+  fontSize: '$2',
+});
+
+export const ProviderButton = styled(Button, {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '15px',
+
+  fontFamily: '$sansSerif',
+  fontWeight: '$medium',
+  fontSize: '$2',
 });

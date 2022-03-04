@@ -12,10 +12,6 @@ export const ButtonComponent = styled('button', {
   borderRadius: '8px',
   padding: '10px',
 
-  fontFamily: '$sansSerif',
-  fontWeight: '$medium',
-  fontSize: '$2',
-
   variants: {
     color: {
       purple: {
