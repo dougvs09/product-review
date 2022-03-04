@@ -37,7 +37,7 @@ export const {
       2: '16px',
       3: '24px',
       4: '32px',
-      5: '48px',
+      5: '42px',
     },
     fonts: {
       sansSerif: 'Inter, -apple-system, system-ui, sans-serif',
