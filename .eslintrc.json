@@ -88,6 +88,7 @@
         }
       ],
       "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.tsx", "**/*.spec.tsx", "**/setup.ts"]}],
-      "react/jsx-no-constructed-context-values": "off"
+      "react/jsx-no-constructed-context-values": "off",
+      "jsx-a11y/anchor-is-valid": "off"
     }
 }
