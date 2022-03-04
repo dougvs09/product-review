@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { SubmitHandler } from 'react-hook-form';
-import { MdCheck } from 'react-icons/md';
+import { MdCheck, MdCancel } from 'react-icons/md';
 
 import { NextPage } from 'next';
+import Link from 'next/link';
 
+import { Header } from '@components/Header';
 import { Modal } from '@components/Modal';
 import { ReviewForm, FormTypes } from '@components/ReviewForm';
 import { Upload } from '@components/Upload';
@@ -27,6 +29,9 @@ interface ReviewResponse extends FormTypes {
 
 const Container = styled('section', {
   display: 'grid',
+  width: '100%',
+  height: '100vh',
+  position: 'relative',
 
   h1: {
     justifySelf: 'center',
@@ -55,11 +60,11 @@ const CheckContainer = styled('div', {
   width: '125px',
   height: '125px',
   borderRadius: '50%',
-  background: '$white100',
+  background: 'transparent',
 
   '& svg': {
-    width: '60px',
-    height: '60px',
+    width: '120px',
+    height: '120px',
   },
 });
 
@@ -67,17 +72,32 @@ const SendMessage = styled('span', {
   display: 'block',
   maxWidth: '400px',
   margin: '0 auto',
+  paddingBottom: '20px',
 
   textAlign: 'center',
   fontWeight: '$medium',
   fontSize: '$2',
 });
 
+const LinkMessage = styled('a', {
+  display: 'block',
+  maxWidth: '400px',
+  margin: '0 auto',
+  paddingBottom: '20px',
+
+  textAlign: 'center',
+  fontWeight: '$medium',
+  fontSize: '$1',
+  color: '$black300',
+  textDecoration: 'underline',
+  cursor: 'pointer',
+});
+
 const Create: NextPage = () => {
   const { user } = useAuth();
   const [files, setFiles] = useState<FileDataTypes[]>();
   const [loading, setLoading] = useState(false);
-  const [modalOpened, setModalOpened] = useState(false);
+  const [modal, setModal] = useState({ opened: true, type: 'success' });
 
   const {
     getRootProps,
@@ -125,21 +145,23 @@ const Create: NextPage = () => {
 
         if (reviewCreated.status === 201 && pictureUploaded.status === 200) {
           setLoading(false);
-          setModalOpened(true);
+          setModal({ opened: true, type: 'success' });
         }
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log(e);
+        setModal({ opened: true, type: 'failed' });
       }
     }
   };
 
   const handleModal = () => {
-    setModalOpened(false);
+    setModal({ opened: false, type: '' });
   };
 
   return (
     <Container>
+      <Header />
       <h1>Crie sua review!</h1>
       <FormContainer>
         <Upload
@@ -152,15 +174,33 @@ const Create: NextPage = () => {
         />
         <ReviewForm handleCreateReview={handleCreateReview} loading={loading} />
       </FormContainer>
-      {modalOpened && (
-        <Modal onClick={handleModal}>
+      {modal.opened && modal.type === 'success' ? (
+        <Modal onClick={handleModal} size="md">
           <CheckContainer>
             <MdCheck />
           </CheckContainer>
           <SendMessage>
             Seu review foi salvo com sucesso e já pode ser visto pelos usuários!
           </SendMessage>
+          <Link href="/" passHref>
+            <LinkMessage>Voltar para a página inicial</LinkMessage>
+          </Link>
         </Modal>
+      ) : (
+        modal.type === 'failed' && (
+          <Modal onClick={handleModal} size="md">
+            <CheckContainer>
+              <MdCancel />
+            </CheckContainer>
+            <SendMessage>
+              Tivemos um erro inesperado. Entre em contato com o suporte para
+              resolver seu problema.
+            </SendMessage>
+            <Link href="/" passHref>
+              <LinkMessage>Voltar para a página inicial</LinkMessage>
+            </Link>
+          </Modal>
+        )
       )}
     </Container>
   );
