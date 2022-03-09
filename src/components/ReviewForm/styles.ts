@@ -1,3 +1,4 @@
+import { Button } from '@components/Button';
 import { shade } from 'polished';
 
 import { keyframes, styled } from '../../../stitches.config';
@@ -175,4 +176,9 @@ export const Spinner = styled('div', {
   width: '25px',
   height: '25px',
   animation: `${spinn} 0.5s linear infinite`,
+});
+
+export const FormButton = styled(Button, {
+  fontSize: '$2',
+  fontWeight: '$semiBold',
 });

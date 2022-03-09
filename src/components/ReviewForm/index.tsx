@@ -1,12 +1,15 @@
+import { DetailedHTMLProps, OptionHTMLAttributes } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { MdClear } from 'react-icons/md';
+import { useQuery } from 'react-query';
 
-import { Button } from '@components/Button';
+import { api } from 'utils/api';
 
 import {
   Clear,
   Errors,
   Form,
+  FormButton,
   InputGroup,
   Label,
   SelectGroup,
@@ -29,6 +32,17 @@ type ReviewFormTypes = {
   loading: boolean;
 };
 
+type CategoryType = {
+  id: string;
+  name: string;
+  brands: string[];
+};
+
+type BrandsOptions = DetailedHTMLProps<
+  OptionHTMLAttributes<HTMLOptionElement>,
+  HTMLOptionElement
+>[];
+
 export const ReviewForm: React.FC<ReviewFormTypes> = ({
   handleCreateReview,
   loading,
@@ -39,6 +53,7 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
     watch,
     formState: { errors },
     resetField,
+    setValue,
   } = useForm<FormTypes>();
 
   const category = watch('category');
@@ -48,6 +63,14 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
   ) => {
     resetField(name);
   };
+
+  const { data: categories } = useQuery<CategoryType[], Error>(
+    'categories',
+    async () => {
+      const response = await api.get('/category');
+      return response.data;
+    }
+  );
 
   return (
     <Form onSubmit={handleSubmit(handleCreateReview)}>
@@ -70,7 +93,7 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
           Description
         </Label>
         <textarea
-          placeholder="Insira aqui uma descrição breve sobre o produto e o que você achou dele"
+          placeholder="Insira aqui uma breve descrição sobre o produto e o que você achou dele"
           {...register('description', { required: true })}
         />
         {errors.description && <Errors>Is required</Errors>}
@@ -84,16 +107,21 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
           Price
         </Label>
         <input
-          placeholder="R$ 1.999,99"
+          placeholder="Ex: 1999 (mil novecentos e noventa e nove)"
           {...register('price', {
             required: true,
-            pattern: /([0-9]{1,3}[,])([0-9]{1})/,
+            valueAsNumber: true,
+            onChange: (e) => {
+              const clean = e.target.value
+                .replace(/[.]/g, '')
+                .replace(/[,][0-9]{2}/, '')
+                .trim();
+              const brl = Intl.NumberFormat('pt-BR').format(clean);
+              setValue('price', brl);
+            },
           })}
         />
         {errors.price?.type === 'required' && <Errors>Is required</Errors>}
-        {errors.price?.type === 'pattern' && (
-          <Errors>Formato aceito: ...000,00</Errors>
-        )}
         <Clear type="button" onClick={() => clearInput('price')}>
           <MdClear color="#FFF" />
         </Clear>
@@ -104,16 +132,15 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
           Rate
         </Label>
         <input
-          placeholder="Coloque uma nota de 1,0 a 5,0"
+          placeholder="Coloque uma nota de 1 a 5"
           {...register('rate', {
             required: true,
-            pattern: /([0-5]{1}[,])([0-9]{1})/,
+            valueAsNumber: true,
+            validate: (v) => +v <= 5,
           })}
         />
         {errors.rate?.type === 'required' && <Errors>Is required</Errors>}
-        {errors.rate?.type === 'pattern' && (
-          <Errors>Formato aceito: 0,0 até 5,0</Errors>
-        )}
+        {errors.rate?.type === 'validate' && <Errors>Is better than 5</Errors>}
         <Clear type="button" onClick={() => clearInput('rate')}>
           <MdClear color="#FFF" />
         </Clear>
@@ -132,9 +159,11 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
           <option value="DEFAULT" hidden disabled>
             Choose your category
           </option>
-          <option value="smartphone">Smartphone</option>
-          <option value="television">Television</option>
-          <option value="notebook">Notebook</option>
+          {categories?.map((data) => (
+            <option value={data.id} key={data.id}>
+              {data.name}
+            </option>
+          ))}
         </select>
         {errors.category && <Errors>Is required</Errors>}
       </SelectGroup>
@@ -152,34 +181,20 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
           <option value="DEFAULT" hidden disabled>
             Choose your brand
           </option>
-          {category === 'smartphone' && (
-            <>
-              <option value="samsung">Samsung</option>
-              <option value="apple">Apple</option>
-              <option value="xiaomi">Xiaomi</option>
-              <option value="motorola">Motorola</option>
-              <option value="other">Other</option>
-            </>
-          )}
-          {category === 'notebook' && (
-            <>
-              <option value="dell">Dell</option>
-              <option value="apple">Apple</option>
-              <option value="vaio">Vaio</option>
-              <option value="samsung">Samsung</option>
-              <option value="lenovo">Lenovo</option>
-              <option value="other">Other</option>
-            </>
-          )}
-          {category === 'television' && (
-            <>
-              <option value="samsung">Samsung</option>
-              <option value="lg">LG</option>
-              <option value="philco">Philco</option>
-              <option value="sony">Sony</option>
-              <option value="other">Other</option>
-            </>
-          )}
+          {categories?.map((data) => {
+            const brands: BrandsOptions = [];
+            if (data.id === category) {
+              data.brands.forEach((brand) => {
+                brands.push(
+                  <option value={brand} key={brand}>
+                    {brand}
+                  </option>
+                );
+              });
+            }
+
+            return brands;
+          })}
         </select>
         {errors.brand && <Errors>Is required</Errors>}
       </SelectGroup>
@@ -197,9 +212,9 @@ export const ReviewForm: React.FC<ReviewFormTypes> = ({
         />
         {errors.dayOfPurchase && <Errors>Is required</Errors>}
       </InputGroup>
-      <Button color="purple" size="all" loading={loading} type="submit">
+      <FormButton color="purple" size="all" loading={loading} type="submit">
         {!loading ? 'Enviar' : <Spinner />}
-      </Button>
+      </FormButton>
     </Form>
   );
 };
