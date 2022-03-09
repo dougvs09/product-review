@@ -97,7 +97,7 @@ const Create: NextPage = () => {
   const { user } = useAuth();
   const [files, setFiles] = useState<FileDataTypes[]>();
   const [loading, setLoading] = useState(false);
-  const [modal, setModal] = useState({ opened: true, type: 'success' });
+  const [modal, setModal] = useState({ opened: false, type: 'success' });
 
   const {
     getRootProps,
@@ -128,9 +128,10 @@ const Create: NextPage = () => {
         const reviewCreated: AxiosResponse<ReviewResponse, null> =
           await api.post('review', {
             name: data.title,
-            categoryId: 'd76967e2-c556-4a32-89c5-8c9404d89622',
+            categoryId: data.category,
             description: data.description,
             authorId: user?.id,
+            brand: data.brand,
             rate: data.rate,
             price: data.price,
             dayOfPurchase: data.dayOfPurchase,
